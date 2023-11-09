@@ -23,3 +23,4 @@ class ExpensesList extends StatelessWidget {
     ); //scrollable list - shows only visible items
   }
 }
+ 
