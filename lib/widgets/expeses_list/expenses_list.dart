@@ -16,6 +16,11 @@ class ExpensesList extends StatelessWidget {
       itemBuilder: (ctx, index) => Dismissible(
           //to swipe not needed expenses
           key: ValueKey(expenses[index]), //identify the Expense to delete
+          background: Container(
+            color: Theme.of(context).colorScheme.error.withOpacity(0.4),
+            margin: EdgeInsets.symmetric(
+                horizontal: Theme.of(context).cardTheme.margin!.horizontal),
+          ),
           onDismissed: (direction) {
             onRemoveExpense(expenses[index]);
           },
@@ -23,4 +28,3 @@ class ExpensesList extends StatelessWidget {
     ); //scrollable list - shows only visible items
   }
 }
- 

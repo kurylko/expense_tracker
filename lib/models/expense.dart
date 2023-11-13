@@ -1,7 +1,7 @@
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
- 
+
 final formatter = DateFormat.yMd();
 
 const uuid = Uuid(); // unique id initializer
@@ -29,7 +29,34 @@ class Expense {
   final DateTime date;
   final Category category;
 
-  String get formattedDate {            // this is flutter getter 
+  String get formattedDate {
+    // this is flutter getter
     return formatter.format(date);
+  }
+}
+
+//For the chart - utility constructor function
+class ExpenseBucket {
+  const ExpenseBucket({required this.expenses, required this.category});
+
+  ExpenseBucket.forCategory(
+    //filtering expenses by category
+    List<Expense> allExpenses,
+    this.category,
+  ) : expenses = allExpenses
+            .where((expense) => expense.category == category)
+            .toList();
+
+  final Category category;
+  final List<Expense> expenses;
+
+  double get totalExpenses {
+    double sum = 0;
+
+    for (final expense in expenses) {
+      sum += expense.amount; //sum = sum + expense.amount
+    }
+
+    return sum;
   }
 }
