@@ -29,6 +29,7 @@ class _ExpensesState extends State<Expenses> {
 
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
+      useSafeArea: true, //we make sure to stay away from device features like camera
       isScrollControlled: true, //modal overlay takes full available height
       context: context, builder: (ctx) => NewExpense(onAddExpense: _addExpense),
       //const Text('modal bottom sheet')
@@ -41,32 +42,32 @@ class _ExpensesState extends State<Expenses> {
     });
   }
 
-
   void _removeExpense(Expense expense) {
-  final expenseIndex = _registeredExpenses.indexOf(expense);
-  setState(() {
-    _registeredExpenses.remove(expense);
-  });
-  ScaffoldMessenger.of(context).clearSnackBars();
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      duration: Duration(seconds: 3),
-      content: Text('Expense deleted'),
-      action: SnackBarAction(
-        label: 'Undo',
-        onPressed: () {
-          setState(() {
-            _registeredExpenses.insert(expenseIndex, expense);
-          });
-        },
+    final expenseIndex = _registeredExpenses.indexOf(expense);
+    setState(() {
+      _registeredExpenses.remove(expense);
+    });
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: Duration(seconds: 3),
+        content: Text('Expense deleted'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            setState(() {
+              _registeredExpenses.insert(expenseIndex, expense);
+            });
+          },
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
     Widget mainContent = const Center(
       child: Text('Start adding your first expenses'),
     );
@@ -88,15 +89,25 @@ class _ExpensesState extends State<Expenses> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          // add toolbar with + button
-          Chart(expenses: _registeredExpenses),
-          Expanded(
-            child: mainContent,
-          ),
-        ],
-      ),
+      body: width < 600
+          ? Column(
+              children: [
+                // add toolbar with + button
+                Chart(expenses: _registeredExpenses),
+                Expanded(
+                  child: mainContent,
+                ),
+              ],
+            )
+          : Row(children: [
+              Expanded(    // if nested widgets don't work together, try wrap with Expanded
+                  child: Chart(
+                      expenses:
+                          _registeredExpenses)), 
+              Expanded(
+                child: mainContent,
+              ),
+            ]),
     );
   }
 }
